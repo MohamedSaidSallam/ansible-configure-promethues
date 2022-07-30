@@ -10,3 +10,4 @@
 
   roles:
     - configure-prometheus
+    - configure-alertmanager

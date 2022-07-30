@@ -1,0 +1,66 @@
+---
+- name: "Create Directorys"
+  become: true
+  ansible.builtin.file:
+    path: /tmp/prometheus-alertmanager/
+    state: directory
+    owner: promehteus
+    group: promehteus
+
+- name: Download and Unarchive alert manager
+  ansible.builtin.unarchive:
+    src: https://github.com/prometheus/alertmanager/releases/download/v0.21.0/alertmanager-0.21.0.linux-amd64.tar.gz
+    dest: /tmp/prometheus-alertmanager/
+    remote_src: yes
+
+- name: "move binary to /usr/local/bin"
+  become: true
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/bin/
+    owner: promehteus
+    group: promehteus
+    mode: "0777"
+  loop:
+    - /tmp/prometheus-alertmanager/alertmanager
+    - /tmp/prometheus-alertmanager/amtool
+
+- name: "Create Directorys"
+  become: true
+  ansible.builtin.file:
+    path: /var/lib/alertmanager
+    state: directory
+    owner: promehteus
+    group: promehteus
+
+- name: Delete Prometheus Archive
+  become: true
+  ansible.builtin.file:
+    state: absent
+    path: /tmp/prometheus-alertmanager/
+
+- name: Copy alertmanager yml
+  become: true
+  copy:
+    src: alertmanager.yml
+    dest: /etc/prometheus/alertmanager.yml
+    owner: promehteus
+    group: promehteus
+    mode: "0777"
+
+- name: Copy service file
+  become: true
+  copy:
+    src: alertmanager.service
+    dest: /etc/systemd/system/alertmanager.service
+    owner: promehteus
+    group: promehteus
+    mode: "0777"
+
+- name: Make sure a service unit is running
+  become: true
+  ansible.builtin.systemd:
+    state: restarted
+    name: alertmanager
+    enabled: yes
+    daemon_reload: yes
