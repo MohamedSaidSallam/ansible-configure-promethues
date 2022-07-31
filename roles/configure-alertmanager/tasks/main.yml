@@ -19,6 +19,7 @@
     owner: prometheus
     group: prometheus
     mode: "0777"
+    remote_src: true
   loop:
     - /tmp/prometheus-alertmanager/alertmanager
     - /tmp/prometheus-alertmanager/amtool
