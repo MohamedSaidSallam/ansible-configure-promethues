@@ -3,8 +3,8 @@
   ansible.builtin.file:
     path: /tmp/prometheus-alertmanager/
     state: directory
-    owner: promehteus
-    group: promehteus
+    owner: prometheus
+    group: prometheus
 
 - name: Download and Unarchive alert manager
   ansible.builtin.unarchive:
@@ -16,8 +16,8 @@
   copy:
     src: "{{ item }}"
     dest: /usr/local/bin/
-    owner: promehteus
-    group: promehteus
+    owner: prometheus
+    group: prometheus
     mode: "0777"
   loop:
     - /tmp/prometheus-alertmanager/alertmanager
@@ -27,8 +27,8 @@
   ansible.builtin.file:
     path: /var/lib/alertmanager
     state: directory
-    owner: promehteus
-    group: promehteus
+    owner: prometheus
+    group: prometheus
 
 - name: Delete Prometheus Archive
   ansible.builtin.file:
@@ -39,16 +39,16 @@
   copy:
     src: alertmanager.yml
     dest: /etc/prometheus/alertmanager.yml
-    owner: promehteus
-    group: promehteus
+    owner: prometheus
+    group: prometheus
     mode: "0777"
 
 - name: Copy service file
   copy:
     src: alertmanager.service
     dest: /etc/systemd/system/alertmanager.service
-    owner: promehteus
-    group: promehteus
+    owner: prometheus
+    group: prometheus
     mode: "0777"
 
 - name: Make sure a service unit is running
