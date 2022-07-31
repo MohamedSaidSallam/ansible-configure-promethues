@@ -39,7 +39,6 @@
   copy:
     src: "{{ item }}"
     dest: /etc/prometheus
-    directory_mode:
     owner: prometheus
     group: prometheus
     mode: "0777"
