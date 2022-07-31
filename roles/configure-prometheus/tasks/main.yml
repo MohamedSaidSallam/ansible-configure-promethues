@@ -1,12 +1,10 @@
 ---
 - name: "Create Prometheus User"
-  become: true
   user:
-    name: promehteus
+    name: prometheus
     create_home: no
 
 - name: "Create Directorys"
-  become: true
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -24,7 +22,6 @@
     remote_src: yes
 
 - name: "move binary to /usr/local/bin"
-  become: true
   copy:
     src: "{{ item }}"
     dest: /usr/local/bin/
@@ -36,7 +33,6 @@
     - /tmp/prometheus/promtool
 
 - name: "move binary to /etc/prometheus"
-  become: true
   copy:
     src: "{{ item }}"
     dest: /etc/prometheus
@@ -49,13 +45,11 @@
     - /tmp/prometheus/console_libraries
 
 - name: Delete Prometheus Archive
-  become: true
   ansible.builtin.file:
     state: absent
     path: /tmp/prometheus/
 
 - name: Template prometheus.yml
-  become: true
   vars:
     aws_access_key: "{{ lookup('env', 'aws_discoverability_access_key')}}"
     aws_secret_key: "{{ lookup('env', 'aws_discoverability_secret_key')}}"
@@ -67,7 +61,6 @@
     mode: "0777"
 
 - name: Copy prometheus.service
-  become: true
   copy:
     src: prometheus.service
     dest: /etc/systemd/system/prometheus.service
@@ -76,7 +69,6 @@
     mode: "0777"
 
 - name: Restart Daemon and prometheus service
-  become: true
   ansible.builtin.systemd:
     state: restarted
     name: promehteus

@@ -1,6 +1,5 @@
 ---
 - name: "Create Directorys"
-  become: true
   ansible.builtin.file:
     path: /tmp/prometheus-alertmanager/
     state: directory
@@ -14,7 +13,6 @@
     remote_src: yes
 
 - name: "move binary to /usr/local/bin"
-  become: true
   copy:
     src: "{{ item }}"
     dest: /usr/local/bin/
@@ -26,7 +24,6 @@
     - /tmp/prometheus-alertmanager/amtool
 
 - name: "Create Directorys"
-  become: true
   ansible.builtin.file:
     path: /var/lib/alertmanager
     state: directory
@@ -34,13 +31,11 @@
     group: promehteus
 
 - name: Delete Prometheus Archive
-  become: true
   ansible.builtin.file:
     state: absent
     path: /tmp/prometheus-alertmanager/
 
 - name: Copy alertmanager yml
-  become: true
   copy:
     src: alertmanager.yml
     dest: /etc/prometheus/alertmanager.yml
@@ -49,7 +44,6 @@
     mode: "0777"
 
 - name: Copy service file
-  become: true
   copy:
     src: alertmanager.service
     dest: /etc/systemd/system/alertmanager.service
@@ -58,7 +52,6 @@
     mode: "0777"
 
 - name: Make sure a service unit is running
-  become: true
   ansible.builtin.systemd:
     state: restarted
     name: alertmanager
