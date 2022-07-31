@@ -57,7 +57,7 @@
     aws_access_key: "{{ lookup('env', 'aws_discoverability_access_key')}}"
     aws_secret_key: "{{ lookup('env', 'aws_discoverability_secret_key')}}"
   template:
-    src: prometheus.yml
+    src: files/prometheus.yml
     dest: /etc/prometheus/prometheus.yml
     owner: prometheus
     group: prometheus
