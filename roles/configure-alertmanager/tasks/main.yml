@@ -11,6 +11,8 @@
     src: https://github.com/prometheus/alertmanager/releases/download/v0.21.0/alertmanager-0.21.0.linux-amd64.tar.gz
     dest: /tmp/prometheus-alertmanager/
     remote_src: yes
+    list_files: true
+  register: archive
 
 - name: "move binary to /usr/local/bin"
   copy:
@@ -21,8 +23,8 @@
     mode: "0777"
     remote_src: true
   loop:
-    - /tmp/prometheus-alertmanager/alertmanager
-    - /tmp/prometheus-alertmanager/amtool
+    - /tmp/prometheus-alertmanager/{{ archive.files[0] }}alertmanager
+    - /tmp/prometheus-alertmanager/{{ archive.files[0] }}amtool
 
 - name: "Create Directorys"
   ansible.builtin.file:

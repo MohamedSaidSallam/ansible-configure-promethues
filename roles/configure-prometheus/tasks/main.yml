@@ -20,6 +20,8 @@
     src: https://github.com/prometheus/prometheus/releases/download/v2.19.0/prometheus-2.19.0.linux-amd64.tar.gz
     dest: /tmp/prometheus/
     remote_src: yes
+    list_files: true
+  register: archive
 
 - name: "move binary to /usr/local/bin"
   copy:
@@ -29,8 +31,8 @@
     group: prometheus
     mode: "0777"
   loop:
-    - /tmp/prometheus/prometheus
-    - /tmp/prometheus/promtool
+    - /tmp/prometheus/{{ archive.files[0] }}prometheus
+    - /tmp/prometheus/{{ archive.files[0] }}promtool
 
 - name: "move binary to /etc/prometheus"
   copy:
@@ -41,8 +43,8 @@
     group: prometheus
     mode: "0777"
   loop:
-    - /tmp/prometheus/consoles
-    - /tmp/prometheus/console_libraries
+    - /tmp/prometheus/{{ archive.files[0] }}consoles
+    - /tmp/prometheus/{{ archive.files[0] }}console_libraries
 
 - name: Delete Prometheus Archive
   ansible.builtin.file:
