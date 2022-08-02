@@ -38,15 +38,26 @@
     state: absent
     path: /tmp/prometheus-alertmanager/
 
-- name: Copy alertmanager yml
+- name: Copy rules.yml
   copy:
-    src: alertmanager.yml
+    src: rules.yml
+    dest: /etc/prometheus/rules.yml
+    owner: prometheus
+    group: prometheus
+    mode: "0777"
+
+- name: Template alertmanager.yml
+  vars:
+    slack_api_url: "{{ lookup('env', 'slack_api_url')}}"
+    slack_channel: "{{ lookup('env', 'slack_channel')}}"
+  template:
+    src: files/alertmanager.yml
     dest: /etc/prometheus/alertmanager.yml
     owner: prometheus
     group: prometheus
     mode: "0777"
 
-- name: Copy service file
+- name: Copy alertmanager.service
   copy:
     src: alertmanager.service
     dest: /etc/systemd/system/alertmanager.service
@@ -57,6 +68,9 @@
 - name: Make sure a service unit is running
   ansible.builtin.systemd:
     state: restarted
-    name: alertmanager
+    name: {{ item }}
     enabled: yes
     daemon_reload: yes
+  loop:
+    - alertmanager
+    - prometheus
